@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    />
+    <title>Elliot on Demand</title>
+  </head>
+  <body>
+    <%- include('./partials/_nav'); %>
+    <div class="container mt-2">
+      <header>
+        <h5 id="now_playing"></h5>
+      </header>
+      <audio id="audioplayer" controls autoplay>
+        <source src="" type="audio/wav">
+      </audio>
+      <p>Here are the episodes we have on tap:</p>
+      <div class="list-group">
+        <% episodes.forEach((item) => { %>
+          <button class="episodeName list-group-item list-group-item-action" fileName="<%= item.fileName %>" type="button"><%= item.title %></button>
+        <% }) %>
+      </div>
+      <footer>
+      </footer>
+    </div>
+    <script>
+      var episodes = document.getElementsByClassName("episodeName")
+
+      // add event listener to each episode link to change what is loaded in player
+      for(var i = 0; i < episodes.length; i++) {
+        episodes[i].addEventListener("click", changeCurrentEpisode, false);
+      }
+
+      function changeCurrentEpisode(event) {
+        var player = document.getElementById("audioplayer");
+        player.src = "https://d2bso5f73cpfun.cloudfront.net/" + event.target.getAttribute('fileName');
+        player.load();
+        document.getElementById("now_playing").innerHTML = "Now playing: " + event.target.innerHTML;
+      }
+    </script>
+  </body>
+</html>
