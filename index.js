@@ -4,6 +4,8 @@ app.set('views', './src/views')
 app.set('view engine', 'ejs')
 const { getAudioFiles } = require('./src/awsUtil')
 require('dotenv').config()
+var path = require('path');
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.listen(5000, () => {
   console.log('App is listening on port 5000');
