@@ -7,9 +7,11 @@ require('dotenv').config()
 var path = require('path');
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.listen(5000, () => {
-  console.log('App is listening on port 5000');
+app.listen(process.env.PORT || 5000, () => {
+  console.log(`App is listening on port ${process.env.PORT ? process.env.PORT : 5000}`);
 });
+
+.listen(process.env.PORT || 5000)
 
 app.get('/', (request, response) => {
   getAudioFiles().then((fileNames) => {
