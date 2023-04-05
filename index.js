@@ -22,6 +22,7 @@ app.get('/', (request, response) => {
         fileName: item
       })
     })
+    episodes.sort().reverse();
 
     response.render('index', {
       episodes: episodes
