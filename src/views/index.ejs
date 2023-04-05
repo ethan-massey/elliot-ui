@@ -24,13 +24,15 @@
       <audio id="audioplayer" controls autoplay>
         <source src="" type="audio/wav">
       </audio>
-      <p>Here are the episodes we have on tap:</p>
+      <p>New episodes every day! Here's what we have on tap 🍺:</p>
       <div class="list-group">
         <% episodes.forEach((item) => { %>
           <button class="episodeName list-group-item list-group-item-action" fileName="<%= item.fileName %>" type="button"><%= item.title %></button>
         <% }) %>
       </div>
       <footer>
+        Created by
+        <a target="_blank" href="https://github.com/ethan-massey">Ethan</a>
       </footer>
     </div>
     <script>
