@@ -25,7 +25,7 @@ app.get('/', (request, response) => {
     episodes.sort().reverse();
 
     response.render('index', {
-      episodes: episodes
+      episodes
     });
   })
 });
