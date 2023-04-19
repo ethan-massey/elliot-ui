@@ -16,7 +16,7 @@ app.get('/', (request, response) => {
 
     var episodes = []
     fileNames.forEach((item) => {
-      var formmattedDate = new Date(item.substring(0, item.length-13)).toDateString()
+      var formmattedDate = new Date(`${item.substring(0, item.length-13)} EST`).toDateString()
       episodes.push({
         title: formmattedDate,
         fileName: item
