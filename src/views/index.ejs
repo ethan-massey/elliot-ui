@@ -36,37 +36,17 @@
       </footer>
     </div>
     <script>
-      var episodeButtons = document.getElementsByClassName("episodeName")
-
-      // If user doesn't already have current positions in localStorage
-      if (localStorage.getItem("elliot-currentPositions") === null) {
-        var episodes = <%-JSON.stringify(episodes)%>
-        var currentPositions = {}
-        episodes.forEach((ep) => {
-          currentPositions[ep.fileName] = 0
-        })
-        localStorage.setItem("elliot-currentPositions", JSON.stringify(currentPositions))
-      }
+      var episodes = document.getElementsByClassName("episodeName")
 
       // add event listener to each episode link to change what is loaded in player
-      for(var i = 0; i < episodeButtons.length; i++) {
-        episodeButtons[i].addEventListener("click", changeCurrentEpisode, false);
+      for(var i = 0; i < episodes.length; i++) {
+        episodes[i].addEventListener("click", changeCurrentEpisode, false);
       }
 
       function changeCurrentEpisode(event) {
         var player = document.getElementById("audioplayer");
-        // if an episode is already loaded, update position in storage for next listening
-        if (player.src) {
-          var currentPositions = JSON.parse(localStorage.getItem("elliot-currentPositions"))
-          currentPositions[localStorage.getItem("elliot-currentEpisode")] = player.currentTime
-          localStorage.setItem("elliot-currentPositions", JSON.stringify(currentPositions))
-        }
-
-        // set NEW current episode
-        localStorage.setItem("elliot-currentEpisode", event.target.getAttribute('fileName'))
         player.src = "https://d2bso5f73cpfun.cloudfront.net/" + event.target.getAttribute('fileName');
         player.load();
-        player.currentTime = JSON.parse(localStorage.getItem("elliot-currentPositions"))[event.target.getAttribute('fileName')]
         document.getElementById("now_playing").innerHTML = "Now playing: " + event.target.innerHTML;
       }
     </script>
