@@ -36,17 +36,65 @@
       </footer>
     </div>
     <script>
-      var episodes = document.getElementsByClassName("episodeName")
+      var player = document.getElementById("audioplayer");
+      player.addEventListener("ended", function(){
+        setCurrentEpisodeStatus("Finished")
+      });
+
+      player.addEventListener("play", function(){
+        setCurrentEpisodeStatus("In progress")
+      });
+
+      // Save episode position if tab or browser closed
+      window.addEventListener("beforeunload", saveCurrentEpisodePosition);
+
+      // If user doesn't already have current positions in localStorage
+      if (localStorage.getItem("elliot-episodeMetadata") === null) {
+        var episodes = <%-JSON.stringify(episodes)%>
+        var episodeMetadata = {}
+        episodes.forEach((ep) => {
+          episodeMetadata[ep.fileName] = {
+            "currentPos": 0,
+            "status": "New!"
+        }})
+        localStorage.setItem("elliot-episodeMetadata", JSON.stringify(episodeMetadata))
+      }
 
       // add event listener to each episode link to change what is loaded in player
-      for(var i = 0; i < episodes.length; i++) {
-        episodes[i].addEventListener("click", changeCurrentEpisode, false);
+      var episodeButtons = document.getElementsByClassName("episodeName")
+      for(var i = 0; i < episodeButtons.length; i++) {
+        episodeButtons[i].addEventListener("click", changeCurrentEpisode, false);
+      }
+
+      function setCurrentEpisodeStatus(status) {
+        var currentMetadata = JSON.parse(localStorage.getItem("elliot-episodeMetadata"))
+        currentMetadata[localStorage.getItem("elliot-currentEpisode")].status = status
+        localStorage.setItem("elliot-episodeMetadata", JSON.stringify(currentMetadata))
+      }
+
+      function saveCurrentEpisodePosition() {
+        if (player.src) {
+          var currentMetadata = JSON.parse(localStorage.getItem("elliot-episodeMetadata"))
+          currentMetadata[localStorage.getItem("elliot-currentEpisode")].currentPos = player.currentTime
+          localStorage.setItem("elliot-episodeMetadata", JSON.stringify(currentMetadata))
+        }
       }
 
       function changeCurrentEpisode(event) {
+        saveCurrentEpisodePosition()
+
+        // set NEW current episode
         var player = document.getElementById("audioplayer");
+        localStorage.setItem("elliot-currentEpisode", event.target.getAttribute('fileName'))
         player.src = "https://d2bso5f73cpfun.cloudfront.net/" + event.target.getAttribute('fileName');
         player.load();
+        var status = JSON.parse(localStorage.getItem("elliot-episodeMetadata"))[event.target.getAttribute('fileName')].status
+        // If episode has been finished, start it over
+        if (status === "Finished") {
+          player.currentTime = 0
+        } else {
+          player.currentTime = JSON.parse(localStorage.getItem("elliot-episodeMetadata"))[event.target.getAttribute('fileName')].currentPos
+        }
         document.getElementById("now_playing").innerHTML = "Now playing: " + event.target.innerHTML;
       }
     </script>
