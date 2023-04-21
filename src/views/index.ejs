@@ -48,6 +48,7 @@
       // Save episode position if tab or browser closed
       window.addEventListener("beforeunload", saveCurrentEpisodePosition);
       window.addEventListener("pagehide", saveCurrentEpisodePosition);
+      player.addEventListener("timeupdate", saveCurrentEpisodePosition);
 
       // If user doesn't already have current positions in localStorage
       if (localStorage.getItem("elliot-episodeMetadata") === null) {
