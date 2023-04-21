@@ -36,6 +36,31 @@
       </footer>
     </div>
     <script>
+      // If user doesn't already have current positions in localStorage
+      if (localStorage.getItem("elliot-episodeMetadata") === null) {
+        var episodes = <%-JSON.stringify(episodes)%>
+        var episodeMetadata = {}
+        episodes.forEach((ep) => {
+          episodeMetadata[ep.fileName] = {
+            "currentPos": 0,
+            "status": "New!"
+        }})
+        localStorage.setItem("elliot-episodeMetadata", JSON.stringify(episodeMetadata))
+      }
+      // If new episode uploaded, we need to add it to localStorage
+      var episodes = <%-JSON.stringify(episodes)%>
+      localStorageMetadata = JSON.parse(localStorage.getItem("elliot-episodeMetadata"))
+      episodes.forEach((ep) => {
+        if (localStorageMetadata[ep.fileName] === undefined) {
+          console.log(`${localStorageMetadata[ep.fileName]} was not found`)
+          localStorageMetadata[ep.fileName] = {
+            "currentPos": 0,
+            "status": "New!"
+          }
+          localStorage.setItem("elliot-episodeMetadata", JSON.stringify(localStorageMetadata))
+        }
+      })
+
       var player = document.getElementById("audioplayer");
       player.addEventListener("ended", function(){
         setCurrentEpisodeStatus("Finished")
@@ -49,18 +74,6 @@
       window.addEventListener("beforeunload", saveCurrentEpisodePosition);
       window.addEventListener("pagehide", saveCurrentEpisodePosition);
       player.addEventListener("timeupdate", saveCurrentEpisodePosition);
-
-      // If user doesn't already have current positions in localStorage
-      if (localStorage.getItem("elliot-episodeMetadata") === null) {
-        var episodes = <%-JSON.stringify(episodes)%>
-        var episodeMetadata = {}
-        episodes.forEach((ep) => {
-          episodeMetadata[ep.fileName] = {
-            "currentPos": 0,
-            "status": "New!"
-        }})
-        localStorage.setItem("elliot-episodeMetadata", JSON.stringify(episodeMetadata))
-      }
 
       // add event listener to each episode link to change what is loaded in player
       var episodeButtons = document.getElementsByClassName("episodeName")
