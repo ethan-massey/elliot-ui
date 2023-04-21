@@ -36,23 +36,17 @@
       </footer>
     </div>
     <script>
-      // If user doesn't already have current positions in localStorage
-      if (localStorage.getItem("elliot-episodeMetadata") === null) {
-        var episodes = <%-JSON.stringify(episodes)%>
-        var episodeMetadata = {}
-        episodes.forEach((ep) => {
-          episodeMetadata[ep.fileName] = {
-            "currentPos": 0,
-            "status": "New!"
-        }})
-        localStorage.setItem("elliot-episodeMetadata", JSON.stringify(episodeMetadata))
+      // If user doesn't already have cepisodeMetadata in localStorage, add it
+      var localStorageMetadata = JSON.parse(localStorage.getItem("elliot-episodeMetadata"))
+      if (localStorageMetadata === null) {
+        localStorageMetadata = {}
+        localStorage.setItem("elliot-episodeMetadata", JSON.stringify(localStorageMetadata))
       }
-      // If new episode uploaded, we need to add it to localStorage
+
+      // Add any episodes to localstorage that user doesnt have (new episodes etc)
       var episodes = <%-JSON.stringify(episodes)%>
-      localStorageMetadata = JSON.parse(localStorage.getItem("elliot-episodeMetadata"))
       episodes.forEach((ep) => {
         if (localStorageMetadata[ep.fileName] === undefined) {
-          console.log(`${localStorageMetadata[ep.fileName]} was not found`)
           localStorageMetadata[ep.fileName] = {
             "currentPos": 0,
             "status": "New!"
