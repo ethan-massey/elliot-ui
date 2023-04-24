@@ -4,11 +4,13 @@ function updateStatusBadge(episodeFileName) {
         "In progress": "bg-primary",
         "Finished": "bg-warning",
     }
-    var button = document.getElementById(episodeFileName)
-    let title = button.getAttribute("title")
     var metaData = JSON.parse(localStorage.getItem("elliot-episodeMetadata"))
     let status = metaData[episodeFileName].status
-    button.innerHTML = `${title} <span class="badge text-white ${STATUS_COLORS[status]}" style="pointer-events: none; margin-left: 3%;">${status}</span>`
+    var badge = document.getElementById(`${episodeFileName}-progress-badge`)
+    
+    badge.setAttribute('class', `badge text-white ${STATUS_COLORS[status]}`)
+    badge.setAttribute('style', `pointer-events: none; margin-left: 3%;`)
+    badge.innerHTML = status
 }
 
 function saveCurrentEpisodePosition() {
