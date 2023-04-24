@@ -27,7 +27,14 @@
       <p>New episodes every day! Here's what we have on tap 🍺:</p>
       <div class="list-group">
         <% episodes.forEach((item) => { %>
-          <button class="episodeName list-group-item list-group-item-action" fileName="<%= item.fileName %>" type="button"><%= item.title %></button>
+          <button 
+            class="episodeName list-group-item list-group-item-action"
+            title="<%= item.title %>"
+            fileName="<%= item.fileName %>"
+            type="button"
+            id="<%= item.fileName %>">
+            <%= item.title %>
+          </button>
         <% }) %>
       </div>
       <footer>
@@ -73,12 +80,30 @@
       var episodeButtons = document.getElementsByClassName("episodeName")
       for(var i = 0; i < episodeButtons.length; i++) {
         episodeButtons[i].addEventListener("click", changeCurrentEpisode, false);
+        // Also add status badge for all buttons (on first render)
+        updateStatusBadge(episodeButtons[i].getAttribute('fileName'))
       }
 
       function setCurrentEpisodeStatus(status) {
+        var currentEp = localStorage.getItem("elliot-currentEpisode")
         var currentMetadata = JSON.parse(localStorage.getItem("elliot-episodeMetadata"))
-        currentMetadata[localStorage.getItem("elliot-currentEpisode")].status = status
+        currentMetadata[currentEp].status = status
         localStorage.setItem("elliot-episodeMetadata", JSON.stringify(currentMetadata))
+
+        updateStatusBadge(currentEp)
+      }
+
+      function updateStatusBadge(episodeFileName) {
+        const STATUS_COLORS = {
+          "New!": "bg-success",
+          "In progress": "bg-primary",
+          "Finished": "bg-warning",
+        }
+        var button = document.getElementById(episodeFileName)
+        let title = button.getAttribute("title")
+        var metaData = JSON.parse(localStorage.getItem("elliot-episodeMetadata"))
+        let status = metaData[episodeFileName].status
+        button.innerHTML = `${title} <span class="badge text-white ${STATUS_COLORS[status]}" style="pointer-events: none; margin-left: 3%;">${status}</span>`
       }
 
       function saveCurrentEpisodePosition() {
@@ -104,7 +129,7 @@
         } else {
           player.currentTime = JSON.parse(localStorage.getItem("elliot-episodeMetadata"))[event.target.getAttribute('fileName')].currentPos
         }
-        document.getElementById("now_playing").innerHTML = "Now playing: " + event.target.innerHTML;
+        document.getElementById("now_playing").innerHTML = "Now playing: " + event.target.getAttribute("title");
       }
     </script>
   </body>
