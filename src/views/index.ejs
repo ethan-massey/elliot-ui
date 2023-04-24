@@ -32,8 +32,10 @@
             title="<%= item.title %>"
             fileName="<%= item.fileName %>"
             type="button"
-            id="<%= item.fileName %>">
+            id="<%= item.fileName %>"
+            >
             <%= item.title %>
+            <span id="<%= item.fileName %>-progress-badge"></span>
           </button>
         <% }) %>
       </div>
@@ -42,26 +44,12 @@
         <a target="_blank" href="https://github.com/ethan-massey">Ethan</a>
       </footer>
     </div>
+    <script src="../js/episodeProgressFunctions.js" type="text/javascript"></script>
     <script>
-      // If user doesn't already have cepisodeMetadata in localStorage, add it
-      var localStorageMetadata = JSON.parse(localStorage.getItem("elliot-episodeMetadata"))
-      if (localStorageMetadata === null) {
-        localStorageMetadata = {}
-        localStorage.setItem("elliot-episodeMetadata", JSON.stringify(localStorageMetadata))
-      }
+      // inital setup
+      setupLocalStorage(<%-JSON.stringify(episodes)%>)
 
-      // Add any episodes to localstorage that user doesnt have (new episodes etc)
-      var episodes = <%-JSON.stringify(episodes)%>
-      episodes.forEach((ep) => {
-        if (localStorageMetadata[ep.fileName] === undefined) {
-          localStorageMetadata[ep.fileName] = {
-            "currentPos": 0,
-            "status": "New!"
-          }
-          localStorage.setItem("elliot-episodeMetadata", JSON.stringify(localStorageMetadata))
-        }
-      })
-
+      // add event listeners
       var player = document.getElementById("audioplayer");
       player.addEventListener("ended", function(){
         setCurrentEpisodeStatus("Finished")
@@ -76,60 +64,12 @@
       window.addEventListener("pagehide", saveCurrentEpisodePosition);
       player.addEventListener("timeupdate", saveCurrentEpisodePosition);
 
-      // add event listener to each episode link to change what is loaded in player
+      // add event listener to each episode button to change what is loaded in player
+      // Also, add progress badge to each button
       var episodeButtons = document.getElementsByClassName("episodeName")
       for(var i = 0; i < episodeButtons.length; i++) {
         episodeButtons[i].addEventListener("click", changeCurrentEpisode, false);
-        // Also add status badge for all buttons (on first render)
         updateStatusBadge(episodeButtons[i].getAttribute('fileName'))
-      }
-
-      function setCurrentEpisodeStatus(status) {
-        var currentEp = localStorage.getItem("elliot-currentEpisode")
-        var currentMetadata = JSON.parse(localStorage.getItem("elliot-episodeMetadata"))
-        currentMetadata[currentEp].status = status
-        localStorage.setItem("elliot-episodeMetadata", JSON.stringify(currentMetadata))
-
-        updateStatusBadge(currentEp)
-      }
-
-      function updateStatusBadge(episodeFileName) {
-        const STATUS_COLORS = {
-          "New!": "bg-success",
-          "In progress": "bg-primary",
-          "Finished": "bg-warning",
-        }
-        var button = document.getElementById(episodeFileName)
-        let title = button.getAttribute("title")
-        var metaData = JSON.parse(localStorage.getItem("elliot-episodeMetadata"))
-        let status = metaData[episodeFileName].status
-        button.innerHTML = `${title} <span class="badge text-white ${STATUS_COLORS[status]}" style="pointer-events: none; margin-left: 3%;">${status}</span>`
-      }
-
-      function saveCurrentEpisodePosition() {
-        if (player.src) {
-          var currentMetadata = JSON.parse(localStorage.getItem("elliot-episodeMetadata"))
-          currentMetadata[localStorage.getItem("elliot-currentEpisode")].currentPos = player.currentTime
-          localStorage.setItem("elliot-episodeMetadata", JSON.stringify(currentMetadata))
-        }
-      }
-
-      function changeCurrentEpisode(event) {
-        saveCurrentEpisodePosition()
-
-        // set NEW current episode
-        var player = document.getElementById("audioplayer");
-        localStorage.setItem("elliot-currentEpisode", event.target.getAttribute('fileName'))
-        player.src = "https://d2bso5f73cpfun.cloudfront.net/" + event.target.getAttribute('fileName');
-        player.load();
-        var status = JSON.parse(localStorage.getItem("elliot-episodeMetadata"))[event.target.getAttribute('fileName')].status
-        // If episode has been finished, start it over
-        if (status === "Finished") {
-          player.currentTime = 0
-        } else {
-          player.currentTime = JSON.parse(localStorage.getItem("elliot-episodeMetadata"))[event.target.getAttribute('fileName')].currentPos
-        }
-        document.getElementById("now_playing").innerHTML = "Now playing: " + event.target.getAttribute("title");
       }
     </script>
   </body>
