@@ -1,5 +1,5 @@
 function updateStatusBadge(episodeFileName) {
-const STATUS_COLORS = {
+    const STATUS_COLORS = {
         "New!": "bg-success",
         "In progress": "bg-primary",
         "Finished": "bg-warning",
