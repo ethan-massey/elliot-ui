@@ -1,3 +1,3 @@
 # elliot-ui
 
-![alt text](./public/demo.png)
+<img src="./public/demo.png"  width="50%">
