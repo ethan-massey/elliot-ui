@@ -11,21 +11,28 @@ app.listen(process.env.PORT || 5000, () => {
   console.log(`App is listening on port ${process.env.PORT ? process.env.PORT : 5000}`);
 });
 
-app.get('/', (request, response) => {
-  getAudioFiles().then((fileNames) => {
+// returns formatted episode data for EJS views like so:
+// [{ title: formmattedDate, fileName: item }]
+const getFormattedEpisodeData = async () => {
+  var audioFiles = await getAudioFiles()
 
-    var episodes = []
-    fileNames.forEach((item) => {
-      var formmattedDate = new Date(`${item.substring(0, item.length-13)} EST`).toDateString()
-      episodes.push({
-        title: formmattedDate,
-        fileName: item
-      })
+  var episodes = []
+  audioFiles.forEach((item) => {
+    var formmattedDate = new Date(`${item.substring(0, item.length-13)} EST`).toDateString()
+    episodes.push({
+      title: formmattedDate,
+      fileName: item
     })
-    episodes.sort().reverse();
-
-    response.render('index', {
-      episodes
-    });
   })
+  episodes.sort().reverse();
+
+  return episodes
+}
+
+app.get('/', async (request, response) => {
+  const episodes = await getFormattedEpisodeData()
+
+  response.render('index', {
+    episodes
+  });
 });
