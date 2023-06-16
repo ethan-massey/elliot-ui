@@ -68,7 +68,7 @@
       // Also, add progress badge to each button
       var episodeButtons = document.getElementsByClassName("episodeName")
       for(var i = 0; i < episodeButtons.length; i++) {
-        episodeButtons[i].addEventListener("click", changeCurrentEpisode, false);
+        episodeButtons[i].addEventListener("click", changeEpisode, false);
         updateStatusBadge(episodeButtons[i].getAttribute('fileName'))
       }
     </script>

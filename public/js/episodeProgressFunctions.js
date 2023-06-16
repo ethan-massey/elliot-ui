@@ -21,7 +21,7 @@ function saveCurrentEpisodePosition() {
     }
 }
 
-function changeCurrentEpisode(event) {
+function changeEpisode(event) {
     saveCurrentEpisodePosition()
 
     // set NEW current episode
@@ -37,6 +37,8 @@ function changeCurrentEpisode(event) {
         player.currentTime = JSON.parse(localStorage.getItem("elliot-episodeMetadata"))[event.target.getAttribute('fileName')].currentPos
     }
     document.getElementById("now_playing").innerHTML = "Now playing: " + event.target.getAttribute("title");
+    // Update tab title
+    document.title = `Elliot on Demand - ${event.target.getAttribute("title")}`
 }
 
 function setCurrentEpisodeStatus(status) {
