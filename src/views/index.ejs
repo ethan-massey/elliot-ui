@@ -71,6 +71,13 @@
         episodeButtons[i].addEventListener("click", changeEpisode, false);
         updateStatusBadge(episodeButtons[i].getAttribute('fileName'))
       }
+
+      // If episode in URL, play that episode
+      const episodeQueued = <%- episodeQueued !== undefined ? JSON.stringify(episodeQueued) : 'undefined' %>;
+      if (episodeQueued !== undefined) {
+        episodeButton = document.getElementById(episodeQueued.fileName);
+        episodeButton.click();
+      }
     </script>
   </body>
 </html>

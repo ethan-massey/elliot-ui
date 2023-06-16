@@ -32,7 +32,15 @@ const getFormattedEpisodeData = async () => {
 app.get('/', async (request, response) => {
   const episodes = await getFormattedEpisodeData()
 
+  // If there is an episode in query params
+  // ex. http://localhost:5000/?episode=2023-06-05T05-45-17.wav
+  var episodeQueued
+  if (request.query.episode) {
+    episodeQueued = episodes.find(({ fileName }) => fileName === request.query.episode);
+  }
+
   response.render('index', {
-    episodes
+    episodes,
+    episodeQueued
   });
 });
