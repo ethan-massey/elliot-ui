@@ -37,8 +37,14 @@ function changeEpisode(event) {
         player.currentTime = JSON.parse(localStorage.getItem("elliot-episodeMetadata"))[event.target.getAttribute('fileName')].currentPos
     }
     document.getElementById("now_playing").innerHTML = "Now playing: " + event.target.getAttribute("title");
-    // Update tab title
+    
+    // Update tab title and url
     document.title = `Elliot on Demand - ${event.target.getAttribute("title")}`
+    const newURL = `/?episode=${event.target.getAttribute("fileName")}`;
+    const newState = { additionalInformation: 'Updated the URL with JS' };
+
+    // This will create a new entry in the browser's history, without reloading
+    window.history.pushState(newState, "", newURL);
 }
 
 function setCurrentEpisodeStatus(status) {
