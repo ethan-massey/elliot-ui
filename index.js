@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 app.set('views', './src/views')
 app.set('view engine', 'ejs')
-const { getFormattedEpisodeData } = require('./src/awsUtil')
+const { getAudioFiles } = require('./src/awsUtil')
 require('dotenv').config()
 var path = require('path');
 app.use(express.static(path.join(__dirname, 'public')));
@@ -11,18 +11,21 @@ app.listen(process.env.PORT || 5000, () => {
   console.log(`App is listening on port ${process.env.PORT ? process.env.PORT : 5000}`);
 });
 
-app.get('/', async (request, response) => {
-  const episodes = await getFormattedEpisodeData()
+app.get('/', (request, response) => {
+  getAudioFiles().then((fileNames) => {
 
-  // If there is an episode in query params
-  // ex. http://localhost:5000/?episode=2023-06-05T05-45-17.wav
-  var episodeQueued
-  if (request.query.episode) {
-    episodeQueued = episodes.find(({ fileName }) => fileName === request.query.episode);
-  }
+    var episodes = []
+    fileNames.forEach((item) => {
+      var formmattedDate = new Date(`${item.substring(0, item.length-13)} EST`).toDateString()
+      episodes.push({
+        title: formmattedDate,
+        fileName: item
+      })
+    })
+    episodes.sort().reverse();
 
-  response.render('index', {
-    episodes,
-    episodeQueued
-  });
+    response.render('index', {
+      episodes
+    });
+  })
 });
