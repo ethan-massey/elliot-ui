@@ -71,10 +71,13 @@ function changeEpisode(event) {
         </div>`
 
     document.getElementById("now_playing").innerHTML = "<h5>Now playing: </h5>" + episodeCard;
-    let tooltips = document.querySelectorAll('[data-toggle="tooltip"]');      
-    for(let i = 0; i < tooltips.length; i++) {
-      let tooltip = new bootstrap.Tooltip(tooltips[i]);
-    } 
+    // add tool tip if not on mobile
+    if(window.screen.width >= 600){
+        let tooltips = document.querySelectorAll('[data-toggle="tooltip"]');      
+        for(let i = 0; i < tooltips.length; i++) {
+          let tooltip = new bootstrap.Tooltip(tooltips[i]);
+        } 
+    }
 
     document.getElementById('copyIconParent').addEventListener('click', function() {
         // Get the text field
