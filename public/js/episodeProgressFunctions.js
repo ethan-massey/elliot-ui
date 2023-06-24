@@ -61,7 +61,7 @@ function changeEpisode(event) {
                 </p>
                 <div class="collapse" id="collapseExample">
                     <div class="card card-body" id="shareLinkTextArea">
-                        https://eitmondemand.com/?episode=${event.target.getAttribute('fileName')}
+                        https://www.eitmondemand.com/?episode=${event.target.getAttribute('fileName')}
                         <div id="copyIconParent" class="copyToClipboard" data-toggle="tooltip" data-placement="top" title="Copy link">
                             ${clipBoardIcon}
                         </div>
