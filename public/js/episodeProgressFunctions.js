@@ -36,6 +36,15 @@ function changeEpisode(event) {
     } else {
         player.currentTime = JSON.parse(localStorage.getItem("elliot-episodeMetadata"))[event.target.getAttribute('fileName')].currentPos
     }
+
+    const clipBoardIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+    </svg>`
+
+    const checkMarkIcon = `<svg class="text-success" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+    <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+    </svg>`
     
     var episodeCard = 
         `<div class="card" style="width: 20rem;">
@@ -53,11 +62,8 @@ function changeEpisode(event) {
                 <div class="collapse" id="collapseExample">
                     <div class="card card-body" id="shareLinkTextArea">
                         https://eitmondemand.com/?episode=${event.target.getAttribute('fileName')}
-                        <div id="copyIconParent" class="copyToClipboard">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
-                            <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
-                            <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
-                            </svg>
+                        <div id="copyIconParent" class="copyToClipboard" data-toggle="tooltip" data-placement="top" title="Copy link">
+                            ${clipBoardIcon}
                         </div>
                     </div>
                 </div>
@@ -65,6 +71,11 @@ function changeEpisode(event) {
         </div>`
 
     document.getElementById("now_playing").innerHTML = "<h5>Now playing: </h5>" + episodeCard;
+    let tooltips = document.querySelectorAll('[data-toggle="tooltip"]');      
+    for(let i = 0; i < tooltips.length; i++) {
+      let tooltip = new bootstrap.Tooltip(tooltips[i]);
+    } 
+
     document.getElementById('copyIconParent').addEventListener('click', function() {
         // Get the text field
         var copyText = document.getElementById("shareLinkTextArea").innerText
@@ -72,20 +83,14 @@ function changeEpisode(event) {
         navigator.clipboard.writeText(copyText);
 
         var iconParent = document.getElementById("copyIconParent")
-        iconParent.innerHTML = `<svg class="text-success" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
-        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
-        </svg>`
+        iconParent.innerHTML = checkMarkIcon
 
         const delay = ms => new Promise(res => setTimeout(res, ms));
         const waitTwoSecondsThenRestoreClipboardIcon = async () => {
             await delay(2000);
-            iconParent.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
-            <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
-            <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
-            </svg>`
+            iconParent.innerHTML = clipBoardIcon
         };
         waitTwoSecondsThenRestoreClipboardIcon()
-        // wait for 2 seconds, change back to clipboard icon
     })
     
     // Update tab title and url
