@@ -48,7 +48,7 @@ function changeEpisode(event) {
     
     var episodeCard = 
         `<div class="card" style="width: 20rem;">
-            <img src="https://pbs.twimg.com/profile_images/1433976973387255808/fAfusCBv_400x400.jpg" class="card-img-top" alt="Episode Image">
+            <img src="/EITM_400x400.jpeg" class="card-img-top" alt="Episode Image">
             <div class="card-body">
                 <h5 class="card-title">${event.target.getAttribute('title')}</h5>
                 <p>
