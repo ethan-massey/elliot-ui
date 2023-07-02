@@ -1,8 +1,11 @@
 var axios = require('axios');
 const { MongoClient } = require("mongodb")
+const cron = require('node-cron');
 require('dotenv').config()
 
-const getBearerToken = async () => {
+
+// Get bearer token from Spotify. Expires after 1 hour
+const getSpotifyBearerToken = async () => {
   var token
   var data = {
     'grant_type': 'client_credentials',
@@ -29,10 +32,12 @@ const getBearerToken = async () => {
 }
 
 
-const getEpisodes = async (spotify_bearer_token) => {
+// Get all Elliot in the Morning episodes from Spotify  
+const getEpisodesFromSpotify = async (spotify_bearer_token) => {
   var episodes = []
   var config = {
     method: 'get',
+    // limit=50 maximum that Spotify will provide
     url: 'https://api.spotify.com/v1/shows/4guKQiUnhhWoBGg7KGz9Nb/episodes?market=US&limit=50',
     headers: { 
       'Authorization': `Bearer ${spotify_bearer_token}`
@@ -41,7 +46,7 @@ const getEpisodes = async (spotify_bearer_token) => {
 
   await axios(config)
   .then(function (response) {
-    // get relevant data
+    // get relevant data (title, description)
     var episodesByDate = {}
     response.data.items.forEach(element => {
       if (!episodesByDate.hasOwnProperty(element.release_date)){
@@ -70,15 +75,18 @@ const getEpisodes = async (spotify_bearer_token) => {
   return episodes
 }
 
-async function sendEpisodeDataToMongoDB () {
+
+// Store episode data in MongoDB
+// Uses updateOne() with upsert: true (if no matching document, one is created)
+async function updateEpisodeDataInMongoDB () {
 
   const uri = process.env.MONGO_URI
   const client = new MongoClient(uri);
 
   try {
     // get array of documents to insert
-    const token = await getBearerToken()
-    const docs = await getEpisodes(token)
+    const token = await getSpotifyBearerToken()
+    const docs = await getEpisodesFromSpotify(token)
 
     for (var doc of docs) {
       const database = client.db("spotifyDB");
@@ -104,4 +112,17 @@ async function sendEpisodeDataToMongoDB () {
   }
 }
 
-sendEpisodeDataToMongoDB().catch(console.dir);
+
+// cron job to regularly update episode segments in MongoDB
+const initUpdateEpisodeSegments = () => {
+    // update episodes once a day, every day
+    const updateEpisodeSegments = cron.schedule("0 0 * * *", () => {
+
+      updateEpisodeDataInMongoDB().catch(console.dir);
+      
+    });
+
+    updateEpisodeSegments.start();
+}
+
+module.exports = { initUpdateEpisodeSegments };
