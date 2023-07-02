@@ -1,8 +1,7 @@
 const { MongoClient } = require("mongodb")
 
-// Get a single episode's segments from MongoDB
-// param episodeDate format: "2023-06-29"
-async function getEpisodeSegments (episodeDate) {
+// Get segments of all episodes that are in MongoDB
+async function getEpisodeSegments () {
     const uri = process.env.MONGO_URI
     const client = new MongoClient(uri);
 
@@ -10,14 +9,19 @@ async function getEpisodeSegments (episodeDate) {
         const database = client.db("spotifyDB");
         const spotifySegments = database.collection("spotifySegments");
 
-        const query = { date: episodeDate };
+        const query = {};
 
         const options = {}
 
-        const spotifyEpisodeInfo = await spotifySegments.findOne(query, options);
+        const spotifyEpisodeInfoCursor = await spotifySegments.find(query, options);
 
-        // since this method returns the matched document, not a cursor, print it directly
-        return spotifyEpisodeInfo
+        var res = {}
+        for await (const doc of spotifyEpisodeInfoCursor) {
+            res[doc.date] = {
+                segments: doc.segments
+            }
+        }
+        return res
     } catch (error) {
         console.error(error)
     } finally {
