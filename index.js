@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 app.set('views', './src/views')
 app.set('view engine', 'ejs')
-const { getFormattedEpisodeData } = require('./src/formatEpisodeData')
+const { getFormattedEpisodeData } = require('./src/util/formatEpisodeData')
 require('dotenv').config()
 var path = require('path');
 app.use(express.static(path.join(__dirname, 'public')));
