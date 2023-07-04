@@ -38,8 +38,27 @@
                   type="button"
                   id="<%= item.fileName %>"
                   >
-                  <%= item.title %>
-                  <span id="<%= item.fileName %>-progress-badge"></span>
+                  <div class="row">
+                    <div class="col-4">
+                      <span id="<%= item.fileName %>-progress-badge"></span>
+                    </div>
+                    <div class="col-8">
+                      <strong><%= item.title %></strong>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                      <p>
+                        <ul>
+                          <% item.segments.forEach(seg => { %>
+                            <li>
+                              <%= seg.title %> | <%= seg.description %>
+                            </li>
+                          <% }) %>
+                        </ul>
+                      </p>
+                    </div>
+                  </div>
                 </button>
               <% }) %>
             </div>
