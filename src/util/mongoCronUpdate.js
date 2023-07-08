@@ -1,4 +1,3 @@
-var axios = require("axios");
 const { MongoClient } = require("mongodb");
 const cron = require("node-cron");
 const { getEpisodesFromSpotify } = require("./spotifyUtil");
@@ -12,7 +11,7 @@ async function updateEpisodeSegmentsInMongoDB() {
 
   try {
     // get array of documents to insert
-    const docs = await getEpisodesFromSpotify(token);
+    const docs = await getEpisodesFromSpotify();
 
     for (var doc of docs) {
       const database = client.db("spotifyDB");

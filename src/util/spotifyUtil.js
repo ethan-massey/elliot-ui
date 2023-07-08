@@ -1,4 +1,5 @@
 const { MongoClient } = require("mongodb");
+var axios = require("axios");
 
 // Get bearer token from Spotify. Expires after 1 hour
 const getSpotifyBearerToken = async () => {
