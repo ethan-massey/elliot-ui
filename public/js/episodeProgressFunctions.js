@@ -2,7 +2,7 @@ function updateStatusBadge(episodeFileName) {
   const STATUS_COLORS = {
     "New!": "bg-success",
     "In progress": "bg-primary",
-    Finished: "bg-warning",
+    "Finished": "bg-warning",
   };
   var metaData = JSON.parse(localStorage.getItem("elliot-episodeMetadata"));
   let status = metaData[episodeFileName].status;
@@ -34,14 +34,14 @@ function changeEpisode(event) {
   var player = document.getElementById("audioplayer");
   localStorage.setItem(
     "elliot-currentEpisode",
-    event.target.getAttribute("fileName")
+    event.currentTarget.getAttribute("fileName")
   );
   player.src =
     "https://d2bso5f73cpfun.cloudfront.net/" +
-    event.target.getAttribute("fileName");
+    event.currentTarget.getAttribute("fileName");
   player.load();
   var status = JSON.parse(localStorage.getItem("elliot-episodeMetadata"))[
-    event.target.getAttribute("fileName")
+    event.currentTarget.getAttribute("fileName")
   ].status;
   // If episode has been finished, start it over
   if (status === "Finished") {
@@ -49,7 +49,7 @@ function changeEpisode(event) {
   } else {
     player.currentTime = JSON.parse(
       localStorage.getItem("elliot-episodeMetadata")
-    )[event.target.getAttribute("fileName")].currentPos;
+    )[event.currentTarget.getAttribute("fileName")].currentPos;
   }
 
   const clipBoardIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
@@ -64,7 +64,7 @@ function changeEpisode(event) {
   var episodeCard = `<div class="card" style="width: 20rem;">
             <img src="/EITM_400x400.jpeg" class="card-img-top" alt="Episode Image">
             <div class="card-body">
-                <h5 class="card-title">${event.target.getAttribute(
+                <h5 class="card-title">${event.currentTarget.getAttribute(
                   "title"
                 )}</h5>
                 <p>
@@ -77,7 +77,7 @@ function changeEpisode(event) {
                 </p>
                 <div class="collapse" id="collapseExample">
                     <div class="card card-body" id="shareLinkTextArea">
-                        https://www.eitmondemand.com/?episode=${event.target.getAttribute(
+                        https://www.eitmondemand.com/?episode=${event.currentTarget.getAttribute(
                           "fileName"
                         )}
                         <div id="copyIconParent" class="copyToClipboard" data-toggle="tooltip" data-placement="top" title="Copy link">
@@ -118,8 +118,8 @@ function changeEpisode(event) {
     });
 
   // Update tab title and url
-  document.title = `Elliot on Demand - ${event.target.getAttribute("title")}`;
-  const newURL = `/?episode=${event.target.getAttribute("fileName")}`;
+  document.title = `Elliot on Demand - ${event.currentTarget.getAttribute("title")}`;
+  const newURL = `/?episode=${event.currentTarget.getAttribute("fileName")}`;
   const newState = { additionalInformation: "Updated the URL with JS" };
 
   // This will create a new entry in the browser's history, without reloading
