@@ -23,24 +23,6 @@ const getAudioFiles = async () => {
   }
 }
 
-// returns formatted episode data for EJS views like so:
-// [{ title: formmattedDate, fileName: item }]
-const getFormattedEpisodeData = async () => {
-  var audioFiles = await getAudioFiles()
-
-  var episodes = []
-  audioFiles.forEach((item) => {
-    var formmattedDate = new Date(`${item.substring(0, item.length-13)} EST`).toDateString()
-    episodes.push({
-      title: formmattedDate,
-      fileName: item
-    })
-  })
-  episodes.sort().reverse();
-
-  return episodes
-}
-
 module.exports = {
-  getFormattedEpisodeData
+  getAudioFiles
 }
