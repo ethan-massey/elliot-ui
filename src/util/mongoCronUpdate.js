@@ -45,7 +45,7 @@ async function updateEpisodeSegmentsInMongoDB() {
 // cron job to regularly update episode segments in MongoDB
 const initUpdateEpisodeSegments = () => {
   // update episodes once a day, every day
-  const updateEpisodeSegments = cron.schedule("0 0 * * *", () => {
+  const updateEpisodeSegments = cron.schedule("0 17 * * *", () => {
     updateEpisodeSegmentsInMongoDB().catch(console.dir);
   });
 
