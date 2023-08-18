@@ -90,7 +90,7 @@ async function getEpisodeSegmentsFromMongo() {
     var res = {};
     for await (const doc of spotifyEpisodeInfoCursor) {
       res[doc.date] = {
-        segments: doc.segments,
+        segments: doc.segments.sort().reverse(),
       };
     }
     return res;
