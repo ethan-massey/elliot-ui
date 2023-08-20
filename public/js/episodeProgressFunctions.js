@@ -13,6 +13,27 @@ function updateStatusBadge(episodeFileName) {
   badge.innerHTML = status;
 }
 
+function renderProgressBar(episodeFileName) {
+  var metaData = JSON.parse(localStorage.getItem("elliot-episodeMetadata"));
+  let status = metaData[episodeFileName].status;
+  let episodeLength = metaData[episodeFileName].length;
+
+  // if episode in progress and episode length stored in localstorage
+  if (status === "In progress" && episodeLength !== undefined) {
+    // calculate percentage
+    let currentPos = metaData[episodeFileName].currentPos;
+    const percent = currentPos / episodeLength * 100;
+
+    // update html
+    var progressBar = document.getElementById(`${episodeFileName}-progress-bar`);
+    progressBar.innerHTML = `
+    <div class="progress" style="height: 4px;">
+      <div class="progress-bar" role="progressbar" style="width: ${percent}%" aria-valuenow="${percent}" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+    `;
+  }
+}
+
 function saveCurrentEpisodePosition() {
   if (player.src) {
     var currentMetadata = JSON.parse(
@@ -118,7 +139,9 @@ function changeEpisode(event) {
     });
 
   // Update tab title and url
-  document.title = `Elliot on Demand - ${event.currentTarget.getAttribute("title")}`;
+  document.title = `Elliot on Demand - ${event.currentTarget.getAttribute(
+    "title"
+  )}`;
   const newURL = `/?episode=${event.currentTarget.getAttribute("fileName")}`;
   const newState = { additionalInformation: "Updated the URL with JS" };
 
