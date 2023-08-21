@@ -6,6 +6,7 @@ const { getFormattedEpisodeData } = require('./src/util/formatEpisodeData')
 require('dotenv').config()
 var path = require('path');
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(require("./src/routes/humanReadableTime"))
 
 app.listen(process.env.PORT || 5000, () => {
   console.log(`App is listening on port ${process.env.PORT ? process.env.PORT : 5000}`);
@@ -28,28 +29,4 @@ app.get('/', async (request, response) => {
     episodes,
     episodeQueued
   });
-});
-
-app.get('/humanReadableTime/:timeInSeconds', async (request, response) => {
-  const inputSeconds = request.params.timeInSeconds
-  const humanizeDuration = require("humanize-duration");
-  const shortEnglishHumanizer = humanizeDuration.humanizer({
-    language: "shortEn",
-    languages: {
-      shortEn: {
-        y: () => "y",
-        mo: () => "mo",
-        w: () => "w",
-        d: () => "d",
-        h: () => "hr",
-        m: () => "min",
-        s: () => "sec",
-        ms: () => "ms",
-      },
-    },
-  });
-  const res = shortEnglishHumanizer(inputSeconds, { round: true, delimiter: " " });  
-  response.status(200).json({
-    readableTime: res
-  })
 });
