@@ -13,7 +13,13 @@ function updateStatusBadge(episodeFileName) {
   badge.innerHTML = status;
 }
 
-function renderProgressBar(episodeFileName) {
+async function getReadableTime (seconds) {
+  let response = await fetch(`/humanReadableTime/${seconds * 1000}`);
+  let data = await response.json();
+  return data.readableTime;
+}
+
+async function renderProgressBar(episodeFileName) {
   var metaData = JSON.parse(localStorage.getItem("elliot-episodeMetadata"));
   let status = metaData[episodeFileName].status;
   let episodeLength = metaData[episodeFileName].length;
@@ -23,6 +29,7 @@ function renderProgressBar(episodeFileName) {
     // calculate percentage
     let currentPos = metaData[episodeFileName].currentPos;
     const percent = currentPos / episodeLength * 100;
+    
 
     // update html
     var progressBar = document.getElementById(`${episodeFileName}-progress-bar`);
@@ -30,6 +37,12 @@ function renderProgressBar(episodeFileName) {
     <div class="progress" style="height: 4px;">
       <div class="progress-bar" role="progressbar" style="width: ${percent}%" aria-valuenow="${percent}" aria-valuemin="0" aria-valuemax="100"></div>
     </div>
+    `;
+
+    const timeRemaining = await getReadableTime(episodeLength - currentPos)
+    var timeRemainingElement = document.getElementById(`${episodeFileName}-time-remaining`);
+    timeRemainingElement.innerHTML = `
+    ${timeRemaining} left
     `;
   }
 }
