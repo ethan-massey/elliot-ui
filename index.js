@@ -6,6 +6,7 @@ const { getFormattedEpisodeData } = require('./src/util/formatEpisodeData')
 require('dotenv').config()
 var path = require('path');
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(require("./src/routes/humanReadableTime"))
 
 app.listen(process.env.PORT || 5000, () => {
   console.log(`App is listening on port ${process.env.PORT ? process.env.PORT : 5000}`);

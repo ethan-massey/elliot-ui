@@ -26,7 +26,7 @@
             <header>
               <div id="now_playing"></div>
             </header>
-            <audio id="audioplayer" class="mt-2 mb-2" controls autoplay>
+            <audio id="audioplayer" class="mt-2 mb-2" controls autoplay preload="metadata">
               <source src="" type="audio/wav">
             </audio>
           <%- include('./partials/_episodeList'); %>
@@ -61,6 +61,20 @@
         setCurrentEpisodeStatus("In progress")
       });
 
+      // When episode loaded into player, add length to metadata
+      // used for progress bar
+      player.onloadedmetadata = function() {
+        var currentEp = localStorage.getItem("elliot-currentEpisode")
+        var metaData = JSON.parse(localStorage.getItem("elliot-episodeMetadata"));
+        if (metaData[currentEp].length === undefined) {
+          metaData[currentEp].length = player.duration
+          localStorage.setItem(
+            "elliot-episodeMetadata",
+            JSON.stringify(metaData)
+          );
+        }
+      };
+
       // Save episode position if tab or browser closed
       window.addEventListener("beforeunload", saveCurrentEpisodePosition);
       window.addEventListener("pagehide", saveCurrentEpisodePosition);
@@ -72,6 +86,7 @@
       for(var i = 0; i < episodeButtons.length; i++) {
         episodeButtons[i].addEventListener("click", changeEpisode, false);
         updateStatusBadge(episodeButtons[i].getAttribute('fileName'))
+        renderProgressBar(episodeButtons[i].getAttribute('fileName'))
       }
 
       // If episode in URL, play that episode
