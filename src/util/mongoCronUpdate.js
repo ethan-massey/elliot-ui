@@ -52,4 +52,4 @@ const initUpdateEpisodeSegments = () => {
   updateEpisodeSegments.start();
 };
 
-module.exports = { initUpdateEpisodeSegments };
+module.exports = { initUpdateEpisodeSegments, updateEpisodeSegmentsInMongoDB };
