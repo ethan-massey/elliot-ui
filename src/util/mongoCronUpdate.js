@@ -21,19 +21,21 @@ async function updateEpisodeSegmentsInMongoDB() {
       // this option instructs the method to create a document if no documents match the filter
       const options = { upsert: true };
 
-      const updateDoc = {
-        $set: doc,
-      };
-      const result = await spotifySegments.updateOne(
-        filter,
-        updateDoc,
-        options
-      );
-      console.log(
-        `${result.matchedCount} document(s) matched the filter ${JSON.stringify(
-          filter
-        )}, updated ${result.modifiedCount} document(s)`
-      );
+      for (seg of doc.segments) {
+        const updateDoc = {
+          $addToSet: { "segments": {title: seg.title, description: seg.description}}
+        };
+        const result = await spotifySegments.updateOne(
+          filter,
+          updateDoc,
+          options
+        );
+        console.log(
+          `${result.matchedCount} document(s) matched the filter ${JSON.stringify(
+            filter
+          )}, updated ${result.modifiedCount} document(s)`
+        );
+      }
     }
   } catch (error) {
     console.error(error);
