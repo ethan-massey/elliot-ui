@@ -33,13 +33,14 @@ async function updateEpisodeSegmentsInMongoDB() {
         console.log(
           `${result.matchedCount} document(s) matched the filter ${JSON.stringify(
             filter
-          )}, updated ${result.modifiedCount} document(s)`
+          )}, updating document`
         );
       }
     }
   } catch (error) {
     console.error(error);
   } finally {
+    console.log(`Documents updated!`)
     await client.close();
   }
 }
